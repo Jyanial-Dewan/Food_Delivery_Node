@@ -1,5 +1,5 @@
 const prisma = require("../DB/db.config");
-const hashPassword = require("../Utility/util");
+const { hashPassword } = require("../Utility/util");
 
 exports.createUser = async (req, res) => {
   try {
