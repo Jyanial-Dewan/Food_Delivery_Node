@@ -44,7 +44,7 @@ const profileImageStorage = multer.diskStorage({
 
 const uploadProfileImage = multer({
   storage: profileImageStorage,
-  limits: { fileSize: 200000 },
+  limits: { fileSize: 1000000 },
   fileFilter: (req, file, cb) => {
     const allowed = ["image/jpeg", "image/png", "image/jpg"];
     allowed.includes(file.mimetype)
