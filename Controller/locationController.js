@@ -17,7 +17,7 @@ exports.upsertLocation = async (req, res) => {
     });
 
     if (!isExist) {
-      return res.status(409).json({
+      return res.status(404).json({
         message: "User not found.",
       });
     }

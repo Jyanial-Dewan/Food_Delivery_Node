@@ -78,3 +78,23 @@ model profile_images {
   created_at DateTime? @default(now()) @db.Timestamp(6)
   users      users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_profile_images_user")
 }
+
+model user_full_profile {
+  user_id                   Int      @id
+  username                  String
+  user_type                 String
+  email                     String
+  phone                     Json
+  first_name                String?
+  last_name                 String?
+  created_at                DateTime?
+
+  latitude                  Decimal? @db.Decimal(9, 7)
+  longitude                 Decimal? @db.Decimal(9, 7)
+  connection_time           DateTime?
+
+  profile_image_original    String?
+  profile_image_thumbnail   String?
+
+  @@map("user_full_profile")
+}
