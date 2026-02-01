@@ -157,3 +157,30 @@ exports.getUsers = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+exports.updateUser = async (req, res) => {
+  const { user_id } = req.query;
+  const { username, user_type, email, phone, first_name, last_name } = req.body;
+  console.log(req.body, user_id, "user_id");
+  try {
+    const user = await prisma.users.update({
+      where: { user_id: Number(user_id) },
+      data: {
+        username,
+        user_type,
+        email,
+        phone,
+        first_name,
+        last_name,
+      },
+    });
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+};
