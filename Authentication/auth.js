@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
       });
       const passwordResult = await comparePassword(
         password,
-        userCredential.password
+        userCredential.password,
       );
       if (!passwordResult) {
         return res.status(401).json({ message: "Invalid password." });
@@ -56,6 +56,7 @@ exports.login = async (req, res) => {
           generateAccessTokenAndRefreshToken({
             isLoggedIn: true,
             user_id: userCredential.user_id,
+            user_type: userRecord.user_type,
             issuedAt: new Date(),
           });
 
@@ -72,6 +73,7 @@ exports.login = async (req, res) => {
           .json({
             isLoggedIn: true,
             user_id: userCredential.user_id,
+            user_type: userRecord.user_type,
             access_token: accessToken,
             refresh_token: refreshToken,
             issuedAt: new Date(),
