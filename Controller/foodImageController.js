@@ -1,48 +1,36 @@
-const path = require("path");
-const multer = require("multer");
-const fs = require("fs");
+const prisma = require("../DB/db.config");
 
-const FOOD_UPLOAD_FOLDER = "./uploads/food_images";
+exports.uploadFoodImages = async (req, res) => {
+  const { food_id } = req.params;
 
-const foodImageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const { user_id, food_id } = req.params;
+  if (!req.files) {
+    return res.status(400).json({
+      message: "Food images is required",
+    });
+  }
+  const food = await prisma.food_items.findUnique({
+    where: { food_id: Number(food_id) },
+  });
 
-    const foodFolder = path.join(
-      FOOD_UPLOAD_FOLDER,
-      user_id.toString(),
-      food_id.toString(),
-    );
-    if (!fs.existsSync(foodFolder)) {
-      fs.mkdirSync(foodFolder, { recursive: true });
-    }
+  if (!food) {
+    return res.status(404).json({
+      message: "Food item not found.",
+    });
+  }
 
-    // initialize index once
-    if (req.foodImageIndex === undefined) {
-      req.foodImageIndex = 0;
-    }
+  const result = await Promise.all(
+    req.files.map((file) =>
+      prisma.food_item_images.create({
+        data: {
+          food_id: Number(food_id),
+          image_url: file.path.replace(/\\/g, "/"),
+        },
+      }),
+    ),
+  );
 
-    cb(null, foodFolder);
-  },
-
-  filename: (req, file, cb) => {
-    const { food_id } = req.params;
-    const index = req.foodImageIndex++;
-    const ext = path.extname(file.originalname);
-
-    cb(null, `${food_id}_${index}${ext}`);
-  },
-});
-
-const uploadFoodImages = multer({
-  storage: foodImageStorage,
-  limits: { fileSize: 300000 },
-  fileFilter: (req, file, cb) => {
-    const allowed = ["image/jpeg", "image/png", "image/jpg"];
-    allowed.includes(file.mimetype)
-      ? cb(null, true)
-      : cb(new Error("Unsupported file type"));
-  },
-}).array("food_images", 3);
-
-module.exports = { uploadFoodImages };
+  res.json({
+    message: "Food images uploaded successfully",
+    result,
+  });
+};

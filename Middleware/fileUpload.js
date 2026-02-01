@@ -123,6 +123,6 @@ const uploadFoodImages = multer({
       ? cb(null, true)
       : cb(new Error("Unsupported file type"));
   },
-}).array("food_images", 3);
+});
 
 module.exports = { uploadProfileImage, generateThumbnail, uploadFoodImages };
