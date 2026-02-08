@@ -22,7 +22,7 @@ model location {
 
 model users {
   user_id        Int             @id @default(autoincrement())
-  username       String          @unique @db.VarChar(20)
+  username       String          @unique @db.VarChar(100)
   user_type      String          @db.VarChar(10)
   email          String          @unique @db.VarChar(50)
   phone          Json
@@ -97,4 +97,22 @@ model user_full_profile {
   profile_image_thumbnail   String?
 
   @@map("user_full_profile")
+}
+
+model food_items_view {
+  food_id        Int      @id
+  user_id        Int
+  name           String
+  description    String?
+  price          Decimal
+  discount_price Decimal?
+  category       String?
+  is_veg         Boolean
+  is_available   Boolean
+  calories       Int?
+  created_at     DateTime
+  updated_at     DateTime
+  image_urls     Json
+
+  @@map("food_items_view")
 }
