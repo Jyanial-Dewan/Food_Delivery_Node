@@ -5,6 +5,7 @@ const locationRoute = require("./locationRoutes");
 const profileImageRoute = require("./profileImageRoutes");
 const foodItemRoutes = require("./foodItemRoutes");
 const foodImageRoute = require("./foodImageRoutes");
+const cartItemRoutes = require("./CartRoutes");
 
 const routes = Router();
 
@@ -14,5 +15,6 @@ routes.use("/api/location", locationRoute);
 routes.use("/api/profile_image", profileImageRoute);
 routes.use("/api/food_items", foodItemRoutes);
 routes.use("/api/food_images", foodImageRoute);
+routes.use("/api/cart_items", cartItemRoutes);
 
 module.exports = routes;
