@@ -9,6 +9,7 @@ const multer = require("multer");
 require("dotenv").config();
 const app = express();
 const server = http.createServer(app);
+const PORT = process.env.PORT || 3001;
 
 // const io = socketIo(server, {
 //   path: "/socket.io/",
@@ -27,6 +28,9 @@ app.use(express.json());
 app.use(cors(options));
 
 app.use(require("./Routes/index"));
+app.use("/health", (req, res) => {
+  res.send("ok");
+});
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
@@ -40,6 +44,6 @@ app.use((err, req, res, next) => {
 // Import and initialize socket.io handlers
 // require("./Services/socket")(io);
 
-server.listen(3000, () => {
-  console.log("🚀 Server running at http://localhost:3000");
+server.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
