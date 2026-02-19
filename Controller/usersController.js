@@ -126,9 +126,7 @@ exports.getUsers = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
       return res.status(200).json({ result });
-    }
-
-    if (page && limit) {
+    } else if (page && limit) {
       const total = await prisma.user_full_profile.count({
         where: {
           user_type: "USER",
@@ -152,6 +150,13 @@ exports.getUsers = async (req, res) => {
         limit: Number(limit),
         totalPages: Math.ceil(total / Number(limit)),
       });
+    } else {
+      const result = await prisma.user_full_profile.findMany();
+
+      if (!result) {
+        return res.status(404).json({ message: "Users not found" });
+      }
+      return res.status(200).json({ result });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });

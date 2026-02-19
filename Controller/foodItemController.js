@@ -75,9 +75,16 @@ exports.getFoodItems = async (req, res) => {
     }
 
     if (page && limit && user_id) {
-      const total = await prisma.food_items_view.count();
+      const total = await prisma.food_items_view.count({
+        where: {
+          user_id: Number(user_id),
+        },
+      });
 
       const result = await prisma.food_items_view.findMany({
+        where: {
+          user_id: Number(user_id),
+        },
         orderBy: {
           created_at: "desc",
         },
