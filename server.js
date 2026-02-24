@@ -1,6 +1,6 @@
 const express = require("express");
 const http = require("http");
-// const socketIo = require("socket.io");
+const socketIo = require("socket.io");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -8,16 +8,17 @@ const multer = require("multer");
 
 require("dotenv").config();
 const app = express();
-const server = http.createServer(app);
 const PORT = process.env.PORT || 3001;
 
-// const io = socketIo(server, {
-//   path: "/socket.io/",
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
+const server = http.createServer(app);
+
+const io = socketIo(server, {
+  path: "/socket.io/",
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 const options = {
   origin: JSON.parse(process.env.ALLOWED_ORIGINS),
   credentials: true,
@@ -41,8 +42,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// Import and initialize socket.io handlers
-// require("./Services/socket")(io);
+require("./Services/Socket/socket")(io);
 
 server.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

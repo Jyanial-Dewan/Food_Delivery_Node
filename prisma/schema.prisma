@@ -21,20 +21,23 @@ model location {
 }
 
 model users {
-  user_id           Int                 @id @default(autoincrement())
-  username          String              @unique @db.VarChar(100)
-  user_type         String              @db.VarChar(10)
-  email             String              @unique @db.VarChar(50)
-  phone             Json
-  first_name        String?             @db.VarChar(20)
-  last_name         String?             @db.VarChar(20)
-  created_at        DateTime?           @default(now()) @db.Timestamp(6)
-  cart              cart[]
-  credentials       credentials?
-  food_item_reviews food_item_reviews[]
-  food_items        food_items[]
-  location          location?
-  profile_images    profile_images?
+  user_id                          Int                 @id @default(autoincrement())
+  username                         String              @unique @db.VarChar(100)
+  user_type                        String              @db.VarChar(10)
+  email                            String              @unique @db.VarChar(50)
+  phone                            Json
+  first_name                       String?             @db.VarChar(20)
+  last_name                        String?             @db.VarChar(20)
+  created_at                       DateTime?           @default(now()) @db.Timestamp(6)
+  cart                             cart[]
+  credentials                      credentials?
+  food_item_reviews                food_item_reviews[]
+  food_items                       food_items[]
+  location                         location?
+  order_statuses                   order_statuses?
+  orders_orders_customer_idTousers orders[]            @relation("orders_customer_idTousers")
+  orders_orders_vendor_idTousers   orders[]            @relation("orders_vendor_idTousers")
+  profile_images                   profile_images?
 }
 
 model food_item_images {
@@ -73,6 +76,7 @@ model food_items {
   food_item_images  food_item_images[]
   food_item_reviews food_item_reviews[]
   users             users               @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_food_items_user")
+  order_items       order_items[]
 }
 
 model profile_images {
@@ -97,42 +101,40 @@ model cart {
   @@id([user_id, food_id])
 }
 
-model user_full_profile {
-  user_id                   Int      @id
-  username                  String
-  user_type                 String
-  email                     String
-  phone                     Json
-  first_name                String?
-  last_name                 String?
-  created_at                DateTime?
-
-  latitude                  Decimal? @db.Decimal(9, 7)
-  longitude                 Decimal? @db.Decimal(9, 7)
-  connection_time           DateTime?
-
-  profile_image_original    String?
-  profile_image_thumbnail   String?
-
-  @@map("user_full_profile")
+model order_items {
+  order_item_id          Int        @id @default(autoincrement())
+  order_id               Int
+  food_id                Int
+  quantity               Int        @default(1)
+  price_at_time          Decimal    @db.Decimal(10, 2)
+  discount_price_at_time Decimal?   @db.Decimal(10, 2)
+  subtotal               Decimal    @db.Decimal(10, 2)
+  created_at             DateTime?  @default(now()) @db.Timestamp(6)
+  food_items             food_items @relation(fields: [food_id], references: [food_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_items_food")
+  orders                 orders     @relation(fields: [order_id], references: [order_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_items_order")
 }
 
-model food_items_view {
-  food_id        Int      @id
-  user_id        Int
-  name           String
-  description    String?
-  price          Decimal
-  discount_price Decimal?
-  category       String?
-  is_veg         Boolean
-  is_available   Boolean
-  calories       Int?
-  created_at     DateTime
-  updated_at     DateTime
-  image_urls     Json
-  avg_rating     Decimal
-  review_count   Int
+model order_statuses {
+  status_id    Int       @id @default(autoincrement())
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  status_names Json      @default("[]")
+  vendor_id    Int       @unique
+  users        users     @relation(fields: [vendor_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_status_vendor")
+}
 
-  @@map("food_items_view")
+model orders {
+  order_id                        Int           @id @default(autoincrement())
+  customer_id                     Int
+  vendor_id                       Int
+  total_amount                    Decimal       @db.Decimal(10, 2)
+  payment_status                  String        @default("UNPAID") @db.VarChar(30)
+  payment_method                  String?       @db.VarChar(50)
+  delivery_address                String?
+  notes                           String?
+  created_at                      DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at                      DateTime?     @default(now()) @db.Timestamp(6)
+  status_code                     String        @db.VarChar(50)
+  order_items                     order_items[]
+  users_orders_customer_idTousers users         @relation("orders_customer_idTousers", fields: [customer_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_customer")
+  users_orders_vendor_idTousers   users         @relation("orders_vendor_idTousers", fields: [vendor_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_vendor")
 }

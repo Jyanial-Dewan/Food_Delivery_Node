@@ -77,6 +77,7 @@ exports.login = async (req, res) => {
             access_token: accessToken,
             refresh_token: refreshToken,
             issuedAt: new Date(),
+            message: "Login Succesful",
           });
       } else {
         return res.status(401).json({ message: "Invalid credential" });
