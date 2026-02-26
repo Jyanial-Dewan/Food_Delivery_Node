@@ -118,7 +118,6 @@ exports.getUsers = async (req, res) => {
       const result = await prisma.user_full_profile.findUnique({
         where: {
           user_id: Number(user_id),
-          user_type: "USER",
         },
       });
 

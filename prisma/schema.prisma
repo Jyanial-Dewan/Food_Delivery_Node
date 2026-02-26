@@ -138,3 +138,39 @@ model orders {
   users_orders_customer_idTousers users         @relation("orders_customer_idTousers", fields: [customer_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_customer")
   users_orders_vendor_idTousers   users         @relation("orders_vendor_idTousers", fields: [vendor_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_vendor")
 }
+
+model user_full_profile {
+  user_id                  Int     @id
+  username                 String
+  user_type                String
+  email                    String
+  phone                    String?
+  first_name               String?
+  last_name                String?
+  created_at               DateTime?
+  latitude                 Float?
+  longitude                Float?
+  connection_time          DateTime?
+  profile_image_original   String?
+  profile_image_thumbnail  String?
+
+  @@map("user_full_profile") // maps the Prisma model to the database view
+}
+
+model food_items_view {
+  food_id        Int @id
+  user_id        Int
+  name           String
+  description    String?
+  price          Decimal   @db.Decimal(10, 2)
+  discount_price Decimal?  @db.Decimal(10, 2)
+  category       String?
+  is_veg         Boolean
+  is_available   Boolean
+  calories       Int?
+  created_at     DateTime?
+  updated_at     DateTime?
+  image_urls     Json
+
+  @@map("food_items_view")
+}
