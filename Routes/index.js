@@ -8,6 +8,7 @@ const foodImageRoute = require("./foodImageRoutes");
 const foodReviewRoutes = require("./foodReviewRoutes");
 const cartItemRoutes = require("./CartRoutes");
 const orderStatusesRoutes = require("./orderStatusesRoutes");
+const orderRoutes = require("./orderRoutes");
 
 const routes = Router();
 
@@ -20,5 +21,6 @@ routes.use("/api/food_images", foodImageRoute);
 routes.use("/api/food_item_reviews", foodReviewRoutes);
 routes.use("/api/cart_items", cartItemRoutes);
 routes.use("/api/order_statuses", orderStatusesRoutes);
+routes.use("/api/orders", orderRoutes);
 
 module.exports = routes;
