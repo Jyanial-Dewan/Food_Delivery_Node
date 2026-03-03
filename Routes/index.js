@@ -9,6 +9,7 @@ const foodReviewRoutes = require("./foodReviewRoutes");
 const cartItemRoutes = require("./CartRoutes");
 const orderStatusesRoutes = require("./orderStatusesRoutes");
 const orderRoutes = require("./orderRoutes");
+const orderItemsRoutes = require("./orderItemsRoutes");
 
 const routes = Router();
 
@@ -22,5 +23,6 @@ routes.use("/api/food_item_reviews", foodReviewRoutes);
 routes.use("/api/cart_items", cartItemRoutes);
 routes.use("/api/order_statuses", orderStatusesRoutes);
 routes.use("/api/orders", orderRoutes);
+routes.use("/api/order_items", orderItemsRoutes);
 
 module.exports = routes;

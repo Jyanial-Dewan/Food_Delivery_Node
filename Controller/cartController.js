@@ -2,12 +2,19 @@ const { Prisma } = require("@prisma/client");
 const prisma = require("../DB/db.config");
 
 exports.createCartItem = async (req, res) => {
-  const { user_id, food_id, quantity, name, discount_price, image_url } =
-    req.body;
+  const {
+    user_id,
+    food_id,
+    vendor_id,
+    quantity,
+    name,
+    discount_price,
+    image_url,
+  } = req.body;
   try {
-    if (!user_id || !name || !discount_price || !food_id) {
+    if (!user_id || !name || !discount_price || !food_id || !vendor_id) {
       return res.status(422).json({
-        message: "User Id, food Id, name, and price are required",
+        message: "User Id, vendor Id, food Id, name, and price are required",
       });
     }
 
@@ -40,6 +47,7 @@ exports.createCartItem = async (req, res) => {
       data: {
         user_id: Number(user_id),
         food_id: Number(food_id),
+        vendor_id: Number(vendor_id),
         name,
         discount_price: new Prisma.Decimal(discount_price),
         quantity,
@@ -82,5 +90,28 @@ exports.getCartItems = async (req, res) => {
     return res.status(200).json({
       result,
     });
+  }
+};
+
+exports.deleteCartItems = async (req, res) => {
+  const { user_id, food_id } = req.query;
+
+  try {
+    const result = await prisma.cart.delete({
+      where: {
+        user_id_food_id: {
+          user_id: Number(user_id),
+          food_id: Number(food_id),
+        },
+      },
+    });
+
+    if (result) {
+      return res.status(200).json({
+        message: "Deleted",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
