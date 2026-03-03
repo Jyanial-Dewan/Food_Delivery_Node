@@ -5,16 +5,15 @@ exports.createOrder = async (req, res) => {
   const {
     customer_id,
     vendor_id,
-    total_amount,
     payment_method,
     delivery_address,
     notes,
     status_code,
   } = req.body;
   try {
-    if (!vendor_id || !customer_id || !total_amount) {
+    if (!vendor_id || !customer_id || !status_code) {
       return res.status(422).json({
-        message: "Vendor Id, customer Id and total amount are required",
+        message: "Vendor Id, customer Id and status code are required",
       });
     }
 
@@ -48,7 +47,6 @@ exports.createOrder = async (req, res) => {
       data: {
         vendor_id: Number(vendor_id),
         customer_id: Number(customer_id),
-        total_amount: new Prisma.Decimal(total_amount),
         payment_method,
         delivery_address,
         notes,
@@ -70,7 +68,7 @@ exports.getOrders = async (req, res) => {
   const { vendor_id } = req.query;
 
   try {
-    const result = await prisma.orders.findMany({
+    const result = await prisma.order_summary_view.findMany({
       where: {
         vendor_id: Number(vendor_id),
       },

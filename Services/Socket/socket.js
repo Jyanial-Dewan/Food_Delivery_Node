@@ -22,7 +22,7 @@ const socket = (io) => {
 
   io.on("connection", async (socket) => {
     socket.on("updateStatus", async ({ order_id }) => {
-      const order = await prisma.orders.findUnique({
+      const order = await prisma.order_summary_view.findUnique({
         where: {
           order_id: Number(order_id),
         },
@@ -33,6 +33,18 @@ const socket = (io) => {
         io.to(Number(order.vendor_id)).emit("updateStatus", order);
         console.log("emitted");
       }
+    });
+
+    socket.on("addOrder", async ({ order_id }) => {
+      setTimeout(async () => {
+        const order = await prisma.order_summary_view.findUnique({
+          where: { order_id: Number(order_id) },
+        });
+
+        if (order) {
+          io.to(Number(order.vendor_id)).emit("addOrder", order);
+        }
+      }, 500); // 300–500ms max
     });
   });
 };
