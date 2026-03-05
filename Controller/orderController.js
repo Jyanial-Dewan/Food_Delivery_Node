@@ -153,7 +153,9 @@ exports.acceptDeliveryRequest = async (req, res) => {
     const isExist = await prisma.orders.findFirst({
       where: {
         order_id: Number(order_id),
-        delivery_man_id: Number(delivery_man_id),
+        delivery_man_id: {
+          not: null,
+        },
       },
     });
 
