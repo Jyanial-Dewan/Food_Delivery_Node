@@ -1,5 +1,5 @@
 const prisma = require("../DB/db.config");
-const { Prisma } = require("@prisma/client");
+// const { Prisma } = require("@prisma/client");
 
 exports.createOrder = async (req, res) => {
   const {
@@ -65,19 +65,33 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.getOrders = async (req, res) => {
-  const { vendor_id } = req.query;
+  const { vendor_id, delivery_man_id } = req.query;
 
   try {
-    const result = await prisma.order_summary_view.findMany({
-      where: {
-        vendor_id: Number(vendor_id),
-      },
-    });
-
-    if (result) {
-      return res.status(200).json({
-        result,
+    if (vendor_id) {
+      const result = await prisma.order_summary_view.findMany({
+        where: {
+          vendor_id: Number(vendor_id),
+        },
       });
+
+      if (result) {
+        return res.status(200).json({
+          result,
+        });
+      }
+    } else if (delivery_man_id) {
+      const result = await prisma.order_summary_view.findMany({
+        where: {
+          delivery_man_id: Number(delivery_man_id),
+        },
+      });
+
+      if (result) {
+        return res.status(200).json({
+          result,
+        });
+      }
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -113,6 +127,43 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(200).json({
         result,
         message: "Order updated.",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+exports.acceptDeliveryRequest = async (req, res) => {
+  const { order_id, delivery_man_id } = req.query;
+  console.log(order_id, delivery_man_id);
+
+  try {
+    const isValid = await prisma.orders.findUnique({
+      where: {
+        order_id: Number(order_id),
+      },
+    });
+
+    if (!isValid) {
+      return res.status(404).json({
+        message: "Order is not found.",
+      });
+    }
+
+    const result = await prisma.orders.update({
+      where: {
+        order_id: Number(order_id),
+      },
+      data: {
+        delivery_man_id: Number(delivery_man_id),
+      },
+    });
+
+    if (result) {
+      return res.status(200).json({
+        result,
+        message: "Order has been assigned to you.",
       });
     }
   } catch (error) {

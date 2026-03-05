@@ -1,7 +1,7 @@
 const prisma = require("../DB/db.config");
 
 exports.upsertOrderStatuses = async (req, res) => {
-  const { vendor_id, status_names } = req.body;
+  const { vendor_id, status_names, columns_per_row } = req.body;
   try {
     if (!vendor_id || !status_names) {
       return res.status(422).json({
@@ -28,10 +28,12 @@ exports.upsertOrderStatuses = async (req, res) => {
       },
       update: {
         status_names,
+        columns_per_row: Number(columns_per_row) || 1,
       },
       create: {
         vendor_id: Number(vendor_id),
         status_names,
+        columns_per_row: Number(columns_per_row) || 1,
       },
     });
 

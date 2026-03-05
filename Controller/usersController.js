@@ -110,6 +110,54 @@ exports.getRestaurants = async (req, res) => {
   }
 };
 
+exports.getDeliveryMan = async (req, res) => {
+  const { user_id, page, limit } = req.query;
+
+  try {
+    if (user_id) {
+      const result = await prisma.user_full_profile.findUnique({
+        where: {
+          user_id: Number(user_id),
+          user_type: "DELIVERY",
+        },
+      });
+
+      if (!result) {
+        return res.status(404).json({ message: "Delivery mans not found" });
+      }
+      return res.status(200).json({ result });
+    }
+
+    if (page && limit) {
+      const total = await prisma.user_full_profile.count({
+        where: {
+          user_type: "DELIVERY",
+        },
+      });
+
+      const result = await prisma.user_full_profile.findMany({
+        where: {
+          user_type: "DELIVERY",
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+      });
+
+      return res.status(200).json({
+        result,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / Number(limit)),
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getUsers = async (req, res) => {
   const { user_id, page, limit } = req.query;
 
