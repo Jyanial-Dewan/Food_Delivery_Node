@@ -6,5 +6,6 @@ const router = Router();
 router.post("/", orderController.createOrder);
 router.get("/", orderController.getOrders);
 router.put("/", orderController.updateOrderStatus);
+router.put("/accept_delivery_request", orderController.acceptDeliveryRequest);
 
 module.exports = router;
