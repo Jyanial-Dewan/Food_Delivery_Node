@@ -150,6 +150,20 @@ exports.acceptDeliveryRequest = async (req, res) => {
         message: "Order is not found.",
       });
     }
+    const isExist = await prisma.orders.findFirst({
+      where: {
+        order_id: Number(order_id),
+        delivery_man_id: {
+          not: null,
+        },
+      },
+    });
+
+    if (isExist) {
+      return res.status(404).json({
+        message: "The order has been assigned already.",
+      });
+    }
 
     const result = await prisma.orders.update({
       where: {
