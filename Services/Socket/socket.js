@@ -31,6 +31,9 @@ const socket = (io) => {
       if (order) {
         io.to(Number(order.customer_id)).emit("updateStatus", order);
         io.to(Number(order.vendor_id)).emit("updateStatus", order);
+        if (order.delivery_man_id) {
+          io.to(Number(order.delivery_man_id)).emit("updateStatus", order);
+        }
         console.log("emitted");
       }
     });
