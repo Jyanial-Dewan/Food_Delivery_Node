@@ -65,13 +65,16 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.getOrders = async (req, res) => {
-  const { vendor_id, delivery_man_id } = req.query;
+  const { vendor_id, delivery_man_id, customer_id } = req.query;
 
   try {
     if (vendor_id) {
       const result = await prisma.order_summary_view.findMany({
         where: {
           vendor_id: Number(vendor_id),
+        },
+        orderBy: {
+          created_at: "desc",
         },
       });
 
@@ -84,6 +87,24 @@ exports.getOrders = async (req, res) => {
       const result = await prisma.order_summary_view.findMany({
         where: {
           delivery_man_id: Number(delivery_man_id),
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+
+      if (result) {
+        return res.status(200).json({
+          result,
+        });
+      }
+    } else if (customer_id) {
+      const result = await prisma.order_summary_view.findMany({
+        where: {
+          customer_id: Number(customer_id),
+        },
+        orderBy: {
+          created_at: "desc",
         },
       });
 
