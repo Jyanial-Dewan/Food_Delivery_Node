@@ -10,6 +10,8 @@ const cartItemRoutes = require("./CartRoutes");
 const orderStatusesRoutes = require("./orderStatusesRoutes");
 const orderRoutes = require("./orderRoutes");
 const orderItemsRoutes = require("./orderItemsRoutes");
+const orderStatusHistoryRoutes = require("./orderStatusHistoryRoutes");
+const orderStatusUpdateRoutes = require("../Services/PushNotification/pushNotificationRoutes");
 
 const routes = Router();
 
@@ -24,5 +26,7 @@ routes.use("/api/cart_items", cartItemRoutes);
 routes.use("/api/order_statuses", orderStatusesRoutes);
 routes.use("/api/orders", orderRoutes);
 routes.use("/api/order_items", orderItemsRoutes);
+routes.use("/api/order_status_history", orderStatusHistoryRoutes);
+routes.use("/api/push_notification", orderStatusUpdateRoutes);
 
 module.exports = routes;

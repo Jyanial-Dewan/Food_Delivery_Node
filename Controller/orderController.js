@@ -54,7 +54,16 @@ exports.createOrder = async (req, res) => {
       },
     });
 
-    if (result) {
+    const statusHistory = await prisma.order_status_history.create({
+      data: {
+        order_id: Number(result.order_id),
+        status_code,
+        changed_by: Number(customer_id),
+        changed_at: new Date(),
+      },
+    });
+
+    if (result && statusHistory) {
       return res
         .status(201)
         .json({ result, message: "Your order has been received." });
@@ -121,7 +130,7 @@ exports.getOrders = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
   const { order_id } = req.query;
-  const { status_code } = req.body;
+  const { status_code, user_id } = req.body;
   try {
     const isValid = await prisma.orders.findUnique({
       where: {
@@ -144,7 +153,16 @@ exports.updateOrderStatus = async (req, res) => {
       },
     });
 
-    if (result) {
+    const statusHistory = await prisma.order_status_history.create({
+      data: {
+        order_id: Number(order_id),
+        status_code,
+        changed_by: Number(user_id),
+        changed_at: new Date(),
+      },
+    });
+
+    if (result && statusHistory) {
       return res.status(200).json({
         result,
         message: "Order updated.",
