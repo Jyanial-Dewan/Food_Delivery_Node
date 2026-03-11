@@ -46,7 +46,6 @@ const socket = (io) => {
 
         if (order) {
           io.to(Number(order.vendor_id)).emit("addOrder", order);
-          console.log("emittted", order);
         }
       }, 500); // 300–500ms max
     });
@@ -61,14 +60,12 @@ const socket = (io) => {
           io.to(Number(order.vendor_id)).emit("updateStatus", order);
           io.to(Number(order.vendor_id)).emit("acceptDeliveryRequest", order);
           io.to(Number(order.delivery_man_id)).emit("addToDashboard", order);
-          console.log("emittted", order);
         }
       }, 500); // 300–500ms max
     });
 
     socket.on("deliveryRequest", ({ delivery_man_id, order }) => {
       io.to(Number(delivery_man_id)).emit("deliveryRequest", order);
-      console.log("emitted");
     });
   });
 };
