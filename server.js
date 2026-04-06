@@ -5,6 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const multer = require("multer");
+const { ALLOWED_ORIGINS } = require("./Variables/variables");
 
 require("dotenv").config();
 const app = express();
@@ -44,6 +45,6 @@ app.use((err, req, res, next) => {
 
 require("./Services/Socket/socket")(io);
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
