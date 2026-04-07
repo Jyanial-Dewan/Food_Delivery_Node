@@ -5,7 +5,7 @@ const { VALKEY_HOST } = require("../../Variables/variables");
 const pub = new Redis(VALKEY_HOST);
 const sub = new Redis(VALKEY_HOST);
 
-const SOCKET_TTL = 30; // seconds
+const SOCKET_TTL = 10; // seconds
 
 const socket = (io) => {
   // ==============================
