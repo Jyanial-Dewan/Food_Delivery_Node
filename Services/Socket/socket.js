@@ -5,7 +5,7 @@ const { VALKEY_HOST } = require("../../Variables/variables");
 const pub = new Redis(VALKEY_HOST);
 const sub = new Redis(VALKEY_HOST);
 
-const SOCKET_TTL = 10; // seconds
+const SOCKET_TTL = 15; // seconds
 
 const socket = (io) => {
   // ==============================
@@ -187,7 +187,7 @@ const socket = (io) => {
     await emitActiveUsers();
   }
 
-  setInterval(cleanupDeadSockets, SOCKET_TTL * 1000);
+  setInterval(cleanupDeadSockets, 5000);
 };
 
 module.exports = socket;
