@@ -1,3 +1,4 @@
+const { default: axios } = require("axios");
 const prisma = require("../DB/db.config");
 
 exports.createIncident = async (req, res) => {
@@ -51,6 +52,31 @@ exports.createIncident = async (req, res) => {
     });
 
     if (result) {
+      if (!u_synced_from_remote) {
+        const triggerEvent = await axios.post(
+          "https://dev376622.service-now.com/api/1808846/remote_incident",
+          {
+            short_description,
+            description,
+            impact,
+            urgency,
+            priority,
+            state,
+            category,
+            u_reference_id,
+          },
+          {
+            auth: {
+              username: "admin",
+              password: "RudL0t1F-u%24F",
+            },
+          },
+        );
+
+        if (triggerEvent) {
+          console.log("Event Triggered");
+        }
+      }
       return res.status(201).json({ result, message: "Incident created." });
     }
   } catch (error) {
