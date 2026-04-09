@@ -10,8 +10,12 @@ exports.createIncident = async (req, res) => {
     state,
     category,
     u_reference_id,
+    u_synced_from_remote,
   } = req.body;
   try {
+    if (u_synced_from_remote) {
+      return;
+    }
     if (!short_description || !description || !impact) {
       console.log(`Triggerd the event, u_reference id: ${u_reference_id}`);
       return res.status(422).json({
